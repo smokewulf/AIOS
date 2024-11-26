@@ -1,259 +1,160 @@
-# AIOS: LLM Agent Operating System
+# Mixture-of-Agents (MoA)
 
-<a href='https://arxiv.org/abs/2403.16971'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
-<a href='https://arxiv.org/abs/2312.03815'><img src='https://img.shields.io/badge/Paper-PDF-blue'></a>
-<a href='https://aios-3.gitbook.io/'><img src='https://img.shields.io/badge/Documentation-AIOS-green'></a>
-[![Code License](https://img.shields.io/badge/Code%20License-MIT-orange.svg)](https://github.com/agiresearch/AIOS/blob/main/LICENSE)
-<a href='https://discord.gg/B2HFxEgTJX'><img src='https://img.shields.io/badge/Community-Discord-8A2BE2'></a>
-[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20AIOS%20Guru-006BFF)](https://gurubase.io/g/aios)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
+[![arXiv](https://img.shields.io/badge/ArXiv-2406.04692-b31b1b.svg)](https://arxiv.org/abs/2406.04692)
+[![Discord](https://img.shields.io/badge/Discord-Together%20AI-blue?logo=discord&logoColor=white)](https://discord.com/invite/9Rk6sSeWEG)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/togethercompute.svg?style=social&label=Follow%20%40togethercompute)](https://twitter.com/togethercompute)
 
-<a href="https://trendshift.io/repositories/8908" target="_blank"><img src="https://trendshift.io/api/badge/repositories/8908" alt="agiresearch%2FAIOS | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+<img alt="MoA architecture" src="./assets/moa.jpg">
 
-The goal of AIOS is to build a Large Language Model (LLM) agent operating system, which intends to embed large language model into the operating system as the brain of the OS. AIOS is designed to address problems (e.g., scheduling, context switch, memory management, etc.) during the development and deployment of LLM-based agents, for a better ecosystem among agent developers and users.
-
-## 🏠 Architecture of AIOS
 <p align="center">
-<img src="docs/assets/aios-figs/architecture.jpg">
+  <a href="#overview"><strong>Overview</strong></a> ·
+  <a href="#quickstart-moa-in-50-loc"><strong>Quickstart</strong></a> ·
+  <a href="#multi-layer-moa-example"><strong>Advanced example</strong></a> ·
+  <a href="#interactive-cli-demo"><strong>Interactive CLI Demo</strong></a>
+  ·
+  <a href="#evaluation"><strong>Evaluation</strong></a>
+  ·
+  <a href="#results"><strong>Results</strong></a>
+  .
+  <a href="#credits"><strong>Credits</strong></a>
 </p>
-<p align="center">
-<img src="docs/assets/aios-figs/scheduler.jpg">
-</p>
 
-AIOS provides the AIOS kernel as an abstraction on top of the OS kernel. The kernel facilitates the installation, execution and usage of agents. Furthermore, the AIOS SDK facilitates the development and deployment of agents.
+## Overview
 
-## 📰 News
-- **[2024-09-01]** 🔥 AIOS supports multiple agent creation frameworks (e.g., ReAct, Reflexion, OpenAGI, AutoGen, Open Interpreter, MetaGPT). Agents created by these frameworks can onboard AIOS. Onboarding guidelines can be found at the [Doc](https://aios-3.gitbook.io/aios-docs/aios-agent/how-to-develop-agents).
-- **[2024-07-10]** 📖 AIOS documentation is up, which can be found at [Website](https://aios-3.gitbook.io/).
-- **[2024-06-20]** 🔥 Function calling for open-sourced LLMs (native huggingface, vllm, ollama) is supported.
-- **[2024-05-20]** 🚀 More agents with ChatGPT-based tool calling are added (i.e., MathAgent, RecAgent, TravelAgent, AcademicAgent and CreationAgent), their profiles and workflows can be found in [OpenAGI](https://github.com/agiresearch/OpenAGI).
-- **[2024-05-13]** 🛠️ Local models (diffusion models) as tools from HuggingFace are integrated.
-- **[2024-05-01]** 🛠️ The agent creation in AIOS is refactored, which can be found in our [OpenAGI](https://github.com/agiresearch/OpenAGI) package.
-- **[2024-04-05]** 🛠️ AIOS currently supports external tool callings (google search, wolframalpha, rapid API, etc).
-- **[2024-04-02]** 🤝 AIOS [Discord Community](https://discord.gg/B2HFxEgTJX) is up. Welcome to join the community for discussions, brainstorming, development, or just random chats! For how to contribute to AIOS, please see [CONTRIBUTE](https://github.com/agiresearch/AIOS/blob/main/CONTRIBUTE.md).
-- **[2024-03-25]** ✈️ Our paper [AIOS: LLM Agent Operating System](https://arxiv.org/abs/2403.16971) is released!
-- **[2023-12-06]** 📋 After several months of working, our perspective paper [LLM as OS, Agents as Apps: Envisioning AIOS, Agents and the AIOS-Agent Ecosystem](https://arxiv.org/abs/2312.03815) is officially released.
+Mixture of Agents (MoA) is a novel approach that leverages the collective strengths of multiple LLMs to enhance performance, achieving state-of-the-art results. By employing a layered architecture where each layer comprises several LLM agents, **MoA significantly outperforms GPT-4 Omni’s 57.5% on AlpacaEval 2.0 with a score of 65.1%**, using only open-source models!
 
+## Quickstart: MoA in 50 LOC
 
-## ✈️ Getting Started
-Please see our ongoing [documentation](https://aios-3.gitbook.io/) for more information.
-- [Installation](https://aios-3.gitbook.io/aios-docs/getting-started/installation)
-- [Quickstart](https://aios-3.gitbook.io/aios-docs/getting-started/quickstart)
-- [WebUI Quickstart](https://aios-3.gitbook.io/aios-docs/getting-started/webui-quickstart)
+To get to get started with using MoA in your own apps, see `moa.py`. In this simple example, we'll use 2 layers and 4 LLMs. You'll need to:
 
-### Installation
+1. Install the Together Python library: `pip install together`
+2. Get your [Together API Key](https://api.together.xyz/settings/api-keys) & export it: `export TOGETHER_API_KEY=`
+3. Run the python file: `python moa.py`
 
-Git clone AIOS
-```bash
-git clone https://github.com/agiresearch/AIOS.git
-cd AIOS
-```
-Create venv environment (recommended)
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-or create conda environment
-```bash
-conda create -n venv python=3.10  # For Python 3.10
-conda create -n venv python=3.11  # For Python 3.11
-conda activate venv
+<img alt="MoA explained" src="./assets/moa-explained.png">
+
+## Multi-layer MoA Example
+
+In the previous example, we went over how to implement MoA with 2 layers (4 LLMs answering and one LLM aggregating). However, one strength of MoA is being able to go through several layers to get an even better response. In this example, we'll go through how to run MoA with 3+ layers in `advanced-moa.py`.
+
+```python
+python advanced-moa.py
 ```
 
-If you have GPU environments, you can install the dependencies using
+<img alt="MoA – 3 layer example" src="./assets/moa-3layer.png">
+
+## Interactive CLI Demo
+
+This interactive CLI demo showcases a simple multi-turn chatbot where the final response is aggregated from various reference models.
+
+To run the interactive demo, follow these 3 steps:
+
+1. Export Your API Key: `export TOGETHER_API_KEY={your_key}`
+2. Install Requirements: `pip install -r requirements.txt`
+3. Run the script: `python bot.py`
+
+The CLI will prompt you to input instructions interactively:
+
+1. Start by entering your instruction at the ">>>" prompt.
+2. The system will process your input using the predefined reference models.
+3. It will generate a response based on the aggregated outputs from these models.
+4. You can continue the conversation by inputting more instructions, with the system maintaining the context of the multi-turn interaction.
+
+### [Optional] Additional Configuration
+
+The demo will ask you to specify certain options but if you want to do additional configuration, you can specify these parameters:
+
+- `--aggregator`: The primary model used for final response generation.
+- `--reference_models`: List of models used as references.
+- `--temperature`: Controls the randomness of the response generation.
+- `--max_tokens`: Maximum number of tokens in the response.
+- `--rounds`: Number of rounds to process the input for refinement. (num rounds == num of MoA layers - 1)
+- `--num_proc`: Number of processes to run in parallel for faster execution.
+- `--multi_turn`: Boolean to toggle multi-turn interaction capability.
+
+## Evaluation
+
+We provide scripts to quickly reproduce some of the results presented in our paper
+For convenience, we have included the code from [AlpacaEval](https://github.com/tatsu-lab/alpaca_eval),
+[MT-Bench](https://github.com/lm-sys/FastChat), and [FLASK](https://github.com/kaistAI/FLASK), with necessary modifications.
+We extend our gratitude to these projects for creating the benchmarks.
+
+### Preparation
+
 ```bash
-pip install -r requirements-cuda.txt
-```
-or else you can install the dependencies using
-```bash
+# install requirements
 pip install -r requirements.txt
+cd alpaca_eval
+pip install -e .
+cd FastChat
+pip install -e ".[model_worker,llm_judge]"
+cd ..
+
+# setup api keys
+export TOGETHER_API_KEY=<TOGETHER_API_KEY>
+export OPENAI_API_KEY=<OPENAI_API_KEY>
 ```
 
-### Quickstart
-> [!TIP]
->
-> For the config of LLM endpoints, multiple API keys may be required to set up.
-> Here we provide the .env.example to for easier configuration of these API keys, you can just copy .env.example as .env and set up the required keys based on your needs.
+### Run AlpacaEval 2
 
-Note: Please use `launch.py` for the WebUI, or `agent_repl.py` for the TUI.
+To run AlpacaEval 2, execute the following scripts:
 
-#### Use with OpenAI API
-You need to get your OpenAI API key from https://platform.openai.com/api-keys.
-Then set up your OpenAI API key as an environment variable
-
-```bash
-export OPENAI_API_KEY=<YOUR_OPENAI_API_KEY>
+```
+bash run_eval_alpaca_eval.sh
 ```
 
-Then run main.py with the models provided by OpenAI API
+### Run MT-Bench
 
-```python
-python main.py --llm_name gpt-3.5-turbo # use gpt-3.5-turbo for example
+For a minimal example of MT-Bench evaluation, run:
+
+```
+bash run_eval_mt_bench.sh
 ```
 
-#### Use with Gemini API
-You need to get your Gemini API key from https://ai.google.dev/gemini-api
+### Run FLASK
 
-```bash
-export GEMINI_API_KEY=<YOUR_GEMINI_API_KEY>
+For a minimal example of FLASK evaluation, run:
+
+```
+bash run_eval_flask.sh
 ```
 
-Then run main.py with the models provided by OpenAI API
+### Results
 
-```python
-python main.py --llm_name gemini-1.5-flash # use gemini-1.5-flash for example
-```
+<div align="center">
+  <img src="assets/alpaca_and_mtbench.png" alt="alpaca_mtbench" style="width: 100%; display: block; margin-left: auto; margin-right: auto;" />
+  <br>
+</div>
 
-If you want to use **open-sourced** models provided by huggingface, here we provide three options:
-* Use with ollama
-* Use with native huggingface models
-* Use with vllm
+We achieved top positions on both the AlpacaEval 2.0 leaderboard and MT-Bench. Notably, on AlpacaEval 2.0, using solely open-source models, we achieved a margin of 7.6% absolute improvement from 57.5% (GPT-4 Omni) to 65.1% (MoA).
 
-#### Use with ollama
-You need to download ollama from from https://ollama.com/.
+<div align="center">
+  <img src="assets/flask.png" alt="flask" style="width: 50%; display: block; margin-left: auto; margin-right: auto;" />
+  <br>
+</div>
 
-Then you need to start the ollama server either from ollama app
+FLASK offers fine-grained evaluation of models across multiple dimensions. Our MoA method significantly outperforms the original Qwen1.5-110B-Chat on harmlessness, robustness, correctness, efficiency, factuality, commonsense, insightfulness, completeness. Additionally, MoA also outperforms GPT-4 Omni in terms of correctness, factuality, insightfulness, completeness, and metacognition.
 
-or using the following command in the terminal
+Please feel free to contact us if you have difficulties in reproducing the results.
 
-```bash
-ollama serve
-```
+## Credits
 
-To use models provided by ollama, you need to pull the available models from https://ollama.com/library
+Notably, this work was made possible by the collaborative spirit and contributions of active organizations in the AI field. We appreciate the efforts of Meta AI, Mistral AI, Microsoft, Alibaba Cloud, and DataBricks for developing the Llama 3, Mixtral, WizardLM 2, Qwen 1.5, and DBRX models. Additionally, we extend our gratitude to Tatsu Labs, LMSYS, and KAIST AI for developing the AlpacaEval, MT-Bench, and FLASK evaluation benchmarks.
 
-```bash
-ollama pull llama3:8b # use llama3:8b for example
-```
+## License
 
-ollama can support CPU-only environment, so if you do not have CUDA environment
+This project is licensed under the Apache 2.0 License - see the LICENSE file for details.
 
-You can run aios with ollama models by
+## Citation
 
-```python
-python main.py --llm_name ollama/llama3:8b --use_backend ollama # use ollama/llama3:8b for example
-```
+If you find this work helpful, please consider citing:
 
-However, if you have the GPU environment, you can also pass GPU-related parameters to speed up
-using the following command
-
-```python
-python main.py --llm_name ollama/llama3:8b --use_backend ollama --max_gpu_memory '{"0": "24GB"}' --eval_device "cuda:0" --max_new_tokens 256
-```
-
-#### Use with native huggingface llm models
-Some of the huggingface models require authentification, if you want to use all of
-the models you need to set up  your authentification token in https://huggingface.co/settings/tokens
-and set up it as an environment variable using the following command
-
-```bash
-export HF_AUTH_TOKENS=<YOUR_TOKEN_ID>
-```
-
-You can run with the
-
-```python
-python main.py --llm_name meta-llama/Meta-Llama-3-8B-Instruct --max_gpu_memory '{"0": "24GB"}' --eval_device "cuda:0" --max_new_tokens 256
-```
-
-By default, huggingface will download the models in the `~/.cache` directory.
-If you want to designate the download directory, you can set up it using the following command
-
-```bash
-export HF_HOME=<YOUR_HF_HOME>
-```
-
-#### Use with vllm
-If you want to speed up the inference of huggingface models, you can use vllm as the backend.
-
-> [!NOTE]
->
-> It is important to note that vllm currently only supports linux and GPU-enabled environment. So if you do not have the environment, you need to choose other options.
-
-Considering that vllm itself does not support passing designated GPU ids, you need to either
-setup the environment variable,
-
-```bash
-export CUDA_VISIBLE_DEVICES="0" # replace with your designated gpu ids
-```
-
-Then run the command
-
-```python
-python main.py --llm_name meta-llama/Meta-Llama-3-8B-Instruct --use_backend vllm --max_gpu_memory '{"0": "24GB"}' --eval_device "cuda:0" --max_new_tokens 256
-```
-
-or you can pass the `CUDA_VISIBLE_DEVICES` as the prefix
-
-```python
-CUDA_VISIBLE_DEVICES=0 python main.py --llm_name meta-llama/Meta-Llama-3-8B-Instruct --use_backend vllm --max_gpu_memory '{"0": "24GB"}' --eval_device "cuda:0" --max_new_tokens 256
-```
-
-### Web Quickstart
-#### Requirements
-
-##### Python
-- Supported versions: **Python 3.9 - 3.11**
-##### Node
-- Supported versions: **LTS** support ONLY
-
-you can check that you meet requirements by running
-```bash
-py -v
-```
-and
-```bash
-npm -v
-```
-in your terminal
-
-
-Run the launch.py to start both the frontend and backend
-```
-python launch.py
-```
-which should open up `https://localhost:3000` (if it doesn't, navigate to that on your browser)
-
-Interact with all agents by using the `@` to tag an agent.
-
-### Supported Agent Frameworks
-- [OpenAGI](https://github.com/agiresearch/openagi)
-- [AutoGen](https://github.com/microsoft/autogen)
-- [Open-Interpreter](https://github.com/OpenInterpreter/open-interpreter)
-- [MetaGPT](https://github.com/geekan/MetaGPT?tab=readme-ov-file)
-
-### Supported LLM Endpoints
-- [OpenAI API](https://platform.openai.com/api-keys)
-- [Gemini API](https://ai.google.dev/gemini-api)
-- [ollama](https://ollama.com/)
-- [vllm](https://docs.vllm.ai/en/stable/)
-- [native huggingface models (locally)](https://huggingface.co/)
-
-## 🖋️ References
-```
-@article{mei2024aios,
-  title={AIOS: LLM Agent Operating System},
-  author={Mei, Kai and Li, Zelong and Xu, Shuyuan and Ye, Ruosong and Ge, Yingqiang and Zhang, Yongfeng}
-  journal={arXiv:2403.16971},
+```bibtex
+@article{wang2024mixture,
+  title={Mixture-of-Agents Enhances Large Language Model Capabilities},
+  author={Wang, Junlin and Wang, Jue and Athiwaratkun, Ben and Zhang, Ce and Zou, James},
+  journal={arXiv preprint arXiv:2406.04692},
   year={2024}
 }
-@article{ge2023llm,
-  title={LLM as OS, Agents as Apps: Envisioning AIOS, Agents and the AIOS-Agent Ecosystem},
-  author={Ge, Yingqiang and Ren, Yujie and Hua, Wenyue and Xu, Shuyuan and Tan, Juntao and Zhang, Yongfeng},
-  journal={arXiv:2312.03815},
-  year={2023}
-}
 ```
-
-## 🚀 Contributions
-For how to contribute, see [CONTRIBUTE](https://github.com/agiresearch/AIOS/blob/main/CONTRIBUTE.md). If you would like to contribute to the codebase, [issues](https://github.com/agiresearch/AIOS/issues) or [pull requests](https://github.com/agiresearch/AIOS/pulls) are always welcome!
-
-## 🌍 AIOS Contributors
-[![AIOS contributors](https://contrib.rocks/image?repo=agiresearch/AIOS&max=300)](https://github.com/agiresearch/AIOS/graphs/contributors)
-
-
-## 🤝 Discord Channel
-If you would like to join the community, ask questions, chat with fellows, learn about or propose new features, and participate in future developments, join our [Discord Community](https://discord.gg/B2HFxEgTJX)!
-
-## 📪 Contact
-
-For issues related to AIOS development, we encourage submitting [issues](https://github.com/agiresearch/AIOS/issues), [pull requests](https://github.com/agiresearch/AIOS/pulls), or initiating discussions in AIOS [Discord Channel](https://discord.gg/B2HFxEgTJX). For other issues please feel free to contact AIOS Foundation ([contact@aios.foundation](mailto:contact@aios.foundation)).
